@@ -1,0 +1,3 @@
+setTimeout(function(){
+  $('form.test').replaceWith('<%=j render @new_test %>');
+},<%= @test.correct? ? 500 : 1500 %>);

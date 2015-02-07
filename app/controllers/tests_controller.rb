@@ -4,11 +4,15 @@ class TestsController < ApplicationController
   before_action :set_test, only: :update
 
   def new
-    @test = Test.generate(@dictionary)
+    @test = get_new_test
   end
 
   def update
     @test.update(test_params)
+    if request.xhr?
+      @new_test = get_new_test
+      render :new
+    end
   end
 
   private
@@ -19,6 +23,10 @@ class TestsController < ApplicationController
 
   def set_test
     @test = @dictionary.tests.find(params[:id])
+  end
+
+  def get_new_test
+    Test.generate(@dictionary)
   end
 
   def set_dictionary
