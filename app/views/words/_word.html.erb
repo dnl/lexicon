@@ -2,5 +2,6 @@
   <div class="cell word"><%= word.word %></div>
   <div class="cell translation"><%= word.translation %></div>
   <div class="cell pronunciation"><%= word.pronunciation %></div>
-  <div class="cell actions"><%= link_to 'Edit', edit_word_path(word), remote: true, class: :button %> <%= link_to 'Delete', word, method: :delete, class: 'button destroy', data: { confirm: 'Are you sure?', remote: true,  } %></div>
+  <div class="cell action"><%= link_to 'Edit', edit_word_path(word), remote: true, class: :button %>
+  </div>
 </div>

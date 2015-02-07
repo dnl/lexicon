@@ -7,4 +7,5 @@ class User < ActiveRecord::Base
   has_many :dictionaries, dependent: :destroy
   belongs_to :current_dictionary, class_name: 'Dictionary', foreign_key: :current_dictionary_id
   has_many :tests, through: :dictionaries
+  has_many :words, through: :dictionaries
 end

@@ -33,6 +33,9 @@ button, a.button, input[type="submit"], .form form ~ a {
   nav & {
     display:inline;
   }
+  .cell.action & {
+    font-size:12px;
+  }
   .actions & {
     width:100%;
     font-size:15px;

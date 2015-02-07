@@ -1,18 +1,56 @@
+@import "variables.scss";
+.card .table {
+  margin-left:-10px;
+  margin-right:-10px;
+}
 .table {
   display:table;
+  background:white;
   .table-row {
     display: table-row;
+  }
+  div.table-row {
+    background:fade-out($background, 0.5);
   }
   .col-label {
     display:none;
   }
   .cell {
+    border-bottom:3px solid $background;
     display: table-cell;
+    padding:10px;
+    font-size:18px;
+    position:relative;
   }
   .table-head {
     display: table-header-group;
   }
   .table-body {
     display: table-row-group;
+  }
+  form .cell {
+    position:relative;
+  }
+  form .cell .input-wrapper {
+    position:absolute;
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+  }
+  form .cell input[type="text"] {
+    border:0;
+    box-sizing:border-box;
+    border:0;
+    padding:10px;
+    font-size:inherit;
+    width:100%;
+    -webkit-appearance:none;
+  }
+  .cell.action {
+    white-space:nowrap;
+    * {
+      display:inline;
+    }
   }
 }

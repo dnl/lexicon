@@ -12,24 +12,19 @@
   <h2><%= @dictionary.name %>
     <%= link_to 'i', edit_dictionary_path(@dictionary), class: 'button rename secondary' %>
   </h2>
-</div>
-
-<%= link_to 'Test me', new_test_path %>
-
-
-<div class="table" id="words">
-  <div class="table-head">
-    <div class="table-row">
-      <div class="cell">word</div>
-      <div class="cell">translation</div>
-      <div class="cell">pronunciation</div>
+  <%# not a real table for a: responsive and b: row=form reasons. %>
+  <div class="table" id="words">
+    <div class="table-head">
+      <div class="table-row">
+        <div class="cell word">word</div>
+        <div class="cell translation">translation</div>
+        <div class="cell pronunciation">pronunciation</div>
+        <div class="cell"></div>
+      </div>
+    </div>
+    <div class="table-body">
+      <%= render partial: 'form' %>
+      <%= render @words %>
     </div>
   </div>
-
-  <div class="table-body">
-    <%= render partial: 'form' %>
-    <%= render @words %>
-  </div>
 </div>
-<td></td>
-        <td></td>
