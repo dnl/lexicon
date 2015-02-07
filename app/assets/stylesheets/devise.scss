@@ -1,0 +1,97 @@
+@import "variables.scss";
+
+.form.card {
+  min-width:300px;
+  background:transparent;
+  br {
+    display:none;
+  }
+}
+.form.card h2 {
+  color: darken($background, 10%);
+  padding:0;
+  margin:0;
+  font-weight:normal;
+  text-align:center;
+  font-size:30px;
+  background:white;
+  margin:-10px -10px 0;
+  padding:10px;
+  border-top-left-radius:5px;
+  border-top-right-radius:5px;
+}
+.form.card .field,
+.form.card .actions {
+  margin:0 -10px;
+  border-top:3px solid $background;
+  border-bottom:3px solid $background;
+  margin-top:-3px;
+  position:relative;
+}
+.form.card .field {
+  background:white;
+  label {
+    font-family:$sans;
+    color: $highlight;
+    text-transform:uppercase;
+    font-size:7px;
+    position:absolute;
+    top:0;
+    padding:3px;
+  }
+  input[type="checkbox"], input[type="radio"] {
+    margin:10px 0 10px 10px;
+    & + label {
+      position:static;
+      font-family:$serif;
+      color:$text-color;
+      text-transform:none;
+      font-size:15px;
+    }
+  }
+  em {
+    position:absolute;
+    top:0;
+    right:0;
+    font-size:10px;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    width:100%;
+    padding:20px 10px 10px;
+    box-sizing:border-box;
+    border:0;
+    font-size:20px;
+    &:focus {
+      background:fade-out($background, 0.9);
+      outline:none;
+    }
+  }
+}
+
+
+.devise form ~ a {
+  margin-bottom:5px;
+  width:auto;
+  background:rgba(255,255,255,0.7);
+  font-size:14px;
+  margin-left:-10px;
+  margin-right:-10px;
+}
+.devise form + a {
+  margin-top:30px;
+  position:relative;
+  &:before {
+    content:'- OR -';
+    position:absolute;
+    top:-25px;
+    left:0;
+    color:white;
+    font-family:$sans;
+    font-size:10px;
+    width:100%;
+    text-align:center;
+    pointer-events:none;
+  }
+}

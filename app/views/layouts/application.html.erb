@@ -6,7 +6,19 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <%= yield %>
+  <div class="container">
+    <div class="header">
+      <h1 class="brand">
+        lexicon;
+      </h1>
+      <nav>
+        <%= link_to('Sign out', destroy_user_session_path, :method => :delete, class: :button) if user_signed_in? %>
+      </nav>
+    </div>
+    <div class="body">
+      <%= content_for?(:content) ? yield(:content) : yield %>
+    </div>
+    </div>
   <%= javascript_include_tag 'application' %>
 </body>
 </html>

@@ -1,0 +1,35 @@
+@import "variables.scss";
+
+button, a.button, input[type="submit"], .devise form ~ a {
+  -webkit-appearance:none;
+  border-radius:5px;
+  padding:5px;
+  border:0;
+  text-decoration:none;
+  text-transform:uppercase;
+  background:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:$text-color;
+  vertical-align:middle;
+  font-family: $sans;
+  cursor:pointer;
+  .card.test & {
+    background:#eee;
+  }
+  &:hover, &:focus, &:active, .actions & {
+    background-color: $highlight;
+    color: white;
+    outline:none;
+  }
+  .actions & {
+    width:100%;
+    font-size:15px;
+    border-top-left-radius:0;
+    border-top-right-radius:0;
+    &:hover, &:focus, &:active {
+      background-color:$text-color;
+    }
+  }
+}
