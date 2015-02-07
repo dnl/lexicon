@@ -13,8 +13,10 @@ class Test < ActiveRecord::Base
     [:word_upcase,   :word],
     [:word_upcase,   :pronunciation]
   ]
+  TEST_TYPE_IDS = (0..TEST_TYPES.length-1).to_a
 
-  def self.generate(dictionary, test_type=TEST_TYPES.sample)
+  def self.generate(dictionary)
+    test_type = TEST_TYPES[dictionary.test_type_ids.sample]
     test_word = Word.where(dictionary_id: dictionary.id)
                      .test_word(*test_type)
     question_column, answer_column = test_type

@@ -15,7 +15,7 @@ Todo
 - [x] more pretty
 - [x] domain name
 - [x] capital or not
-- [ ] choose kind of test (you give me greek, I give you english, etc)
+- [x] choose kind of test (you give me greek, I give you english, etc)
 - [ ] get other people using it
 - [ ] Tests first things you've made mistakes on
 - [ ] Tests first untested things

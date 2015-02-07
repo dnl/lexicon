@@ -52,6 +52,11 @@ class DictionariesController < ApplicationController
     end
 
     def dictionary_params
-      params.require(:dictionary).permit(:name, :word_column_label, :translation_column_label)
+      params.require(:dictionary).permit(
+        :name,
+        :word_column_label,
+        :translation_column_label,
+        test_type_ids: []
+      )
     end
 end

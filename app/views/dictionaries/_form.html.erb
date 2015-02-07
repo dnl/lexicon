@@ -23,6 +23,16 @@
     <%= f.text_field :translation_column_label %>
   </div>
 
+  <div class="field">
+    <%= f.label :test_type_ids, 'Test types' %>
+    <% Test::TEST_TYPES.each_with_index do |type, i| %>
+      <div>
+        <%= %>
+        <%= f.check_box :"test_type_ids", {multiple: true, id: "test_type_ids_#{i}"}, i, nil %>
+        <label for="test_type_ids_<%= i %>"><%=t [:test_type, *type].join('.'), word: @dictionary.word_column_label, translation: @dictionary.translation_column_label %></label>
+      </div>
+    <% end -%>
+  </div>
   <div class="actions">
     <%= f.submit 'Save' %>
   </div>

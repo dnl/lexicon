@@ -20,4 +20,15 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  test_type:
+    word:
+      pronunciation: 'Q: %{word}, A: pronunciation'
+      translation:   'Q: %{word}, A: %{translation}'
+    pronunciation:
+      word:          'Q: pronunciation, A: %{word}'
+    translation:
+      word:          'Q: %{translation}, A: %{word}'
+    word_upcase:
+      translation:   'Q: Capitalised %{word}, A: %{translation}'
+      word:          'Q: Capitalised %{word}, A: %{word}'
+      pronunciation: 'Q: Capitalised %{word}, A: pronunciation'
