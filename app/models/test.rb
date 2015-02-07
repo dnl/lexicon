@@ -12,7 +12,7 @@ class Test < ActiveRecord::Base
   ]
 
   def self.generate(dictionary, test_type=TEST_TYPES.sample)
-    test_word = Word.where(dictionary: dictionary)
+    test_word = Word.where(dictionary_id: dictionary.id)
                      .test_word(*test_type)
     question_column, answer_column = test_type
     create(
@@ -20,7 +20,9 @@ class Test < ActiveRecord::Base
       word: test_word,
       question: test_word.send(question_column),
       correct_answer: test_word.send(answer_column),
-      options: test_word.answers(answer_column)
+      options: test_word.answers(answer_column),
+      question_method: question_column,
+      answer_method: answer_column
     )
   end
 

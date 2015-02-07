@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150206213133) do
+ActiveRecord::Schema.define(version: 20150207182051) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,15 +26,17 @@ ActiveRecord::Schema.define(version: 20150206213133) do
   add_index "dictionaries", ["user_id"], name: "index_dictionaries_on_user_id", using: :btree
 
   create_table "tests", force: :cascade do |t|
-    t.integer  "word_id",        null: false
-    t.integer  "dictionary_id",  null: false
-    t.string   "question",       null: false
-    t.string   "correct_answer", null: false
-    t.string   "options",                     array: true
+    t.integer  "word_id",         null: false
+    t.integer  "dictionary_id",   null: false
+    t.string   "question",        null: false
+    t.string   "correct_answer",  null: false
+    t.string   "options",                      array: true
     t.string   "given_answer"
     t.boolean  "correct"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.string   "question_method"
+    t.string   "answer_method"
   end
 
   create_table "users", force: :cascade do |t|
@@ -50,6 +52,7 @@ ActiveRecord::Schema.define(version: 20150206213133) do
     t.inet     "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "current_dictionary_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

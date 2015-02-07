@@ -12,9 +12,12 @@
       <h1 class="brand">
         lexicon;
       </h1>
-      <nav>
-        <%= link_to('Sign out', destroy_user_session_path, :method => :delete, class: :button) if user_signed_in? %>
-      </nav>
+      <% if user_signed_in? %>
+        <nav>
+          <%= link_to 'languages', dictionaries_path, class: :button %>
+          <%= link_to('Sign out', destroy_user_session_path, :method => :delete, class: 'button sign-out destroy') %>
+        </nav>
+      <% end -%>
     </div>
     <div class="body">
       <%= content_for?(:content) ? yield(:content) : yield %>

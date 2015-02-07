@@ -21,7 +21,7 @@ class WordsController < ApplicationController
       if request.xhr?
         render :create
       else
-        redirect_to dictionary_words_path(@dictionary)
+        redirect_to words_path
       end
     else
       render :new
@@ -34,7 +34,7 @@ class WordsController < ApplicationController
       if request.xhr?
         render :update
       else
-        redirect_to dictionary_words_path(@dictionary)
+        redirect_to words_path
       end
     else
       render :edit
@@ -46,18 +46,19 @@ class WordsController < ApplicationController
     if request.xhr?
       render :destroy
     else
-      redirect_to dictionary_words_path(@dictionary)
+      redirect_to words_path
     end
   end
 
   private
 
     def set_word
-      @word = @dictionary.words.find(params[:id])
+      @word = current_user.words.find(params[:id])
     end
 
     def set_dictionary
-      @dictionary = current_user.dictionaries.find(params[:dictionary_id])
+      @dictionary = current_user.current_dictionary
+      redirect_to dictionaries_path unless @dictionary
     end
 
     def test_params

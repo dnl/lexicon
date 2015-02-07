@@ -1,9 +1,11 @@
 class Word < ActiveRecord::Base
+
   belongs_to :dictionary
   validates :dictionary, presence: true
   validates :word, presence: true
   validates :translation, presence: true
   delegate :user, to: :dictionary
+  has_many :tests, dependent: :destroy
 
   def self.testable(*has_columns)
     order('RANDOM()').tap do |words|

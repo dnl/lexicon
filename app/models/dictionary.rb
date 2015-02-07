@@ -3,7 +3,7 @@ class Dictionary < ActiveRecord::Base
   validates :user, presence: true
   validates :name, presence: true
   validates :name, uniqueness: {scope: :user_id}
-  has_many :words
-  has_many :tests
+  has_many :words, dependent: :destroy
+  has_many :tests, dependent: :destroy
 
 end

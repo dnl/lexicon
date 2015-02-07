@@ -1,8 +1,8 @@
-<%= form_for [@dictionary, test], remote: true, html: {class: 'test card'} do |f| %>
-  <div class="question"><%= test.question %></div>
+<%= form_for test, remote: true, html: {class: 'test card'} do |f| %>
+  <div class="question <%= test.question_method %>"><%= test.question %></div>
   <div class="answers">
     <% test.options.each do |option| %>
-      <%= f.button option, name: :'test[given_answer]', value: option, class: (test.correct_answer == option ? 'answer correct-answer' : 'answer') %>
+      <%= f.button option, name: :'test[given_answer]', value: option, class: "answer #{test.answer_method} #{' correct-answer' if test.correct_answer == option}" %>
     <% end %>
   </div>
 <% end -%>

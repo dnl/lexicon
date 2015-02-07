@@ -17,3 +17,24 @@ body, html {
   display:flex;
   flex-direction:column;
 }
+.header {
+  display:flex;
+  .brand {
+    flex-grow:1;
+  }
+  nav {
+    padding:10px;
+  }
+}
+.brand {
+  color: white;
+  font-family: serif;
+  font-weight: normal;
+  font-style: italic;
+  margin: 10px;
+  text-shadow: 0 -1px 1px #A8D7B9;
+}
+nav {
+  font-size:12px;
+
+}

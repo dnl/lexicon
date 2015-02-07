@@ -1,3 +1,5 @@
+@import "variables.scss";
+
 .card {
   box-sizing: border-box;
   padding: 10px;
@@ -5,4 +7,32 @@
   display:flex;
   flex-direction: column;
   border-radius: 10px;
+}
+.flash {
+  border-radius: 10px;
+  padding:10px;
+  position:relative;
+  margin-bottom:40px;
+  &:after {
+    content:'';
+    width:0;
+    height:0;
+    border:10px;
+    bottom:-10px;
+    border-color:transparent;
+    position:absolute;
+    left:30px;
+  }
+  &.flash-alert {
+    background-color:$error;
+    border-left-color:$error;
+    border-top-color:$error;
+    color:white;
+  }
+  &.flash-notice {
+    background-color:$notice;
+    border-left-color:$notice;
+    border-top-color:$notice;
+    color:white;
+  }
 }

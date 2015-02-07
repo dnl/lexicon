@@ -7,6 +7,7 @@
   height: 90%;
   max-height: 400px;
   flex-grow:1;
+  background:white;
 }
 .answers {
   display:flex;
@@ -29,9 +30,17 @@
   font-family:$serif;
   margin-left:10px;
 }
+.translation {
+  color: #00d72b;
+}
+.pronunciation {
+  font-style:italic;
+}
 .answered .selected {
   background:red;
+  color:white;
 }
 .answered .correct-answer {
   background:#9f9;
+  color:white;
 }

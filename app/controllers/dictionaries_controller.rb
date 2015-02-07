@@ -1,16 +1,13 @@
 class DictionariesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_dictionary, only: [:show, :edit, :update, :destroy, :test]
+  before_action :set_dictionary, only: [:show, :edit, :update, :destroy, :choose]
   def index
     @dictionaries = current_user.dictionaries
+    redirect_to new_dictionary_path if @dictionaries.length.zero?
   end
 
-  def show
-    redirect_to dictionary_words_path(@dictionary)
-  end
-
-  def test
-
+  def choose
+    select_and_view
   end
 
   def new
@@ -23,7 +20,7 @@ class DictionariesController < ApplicationController
   def create
     @dictionary = Dictionary.new(dictionary_params)
     if @dictionary.save
-      redirect_to @dictionary, notice: 'Dictionary was successfully created.'
+      select_and_view
     else
       render :new
     end
@@ -31,7 +28,7 @@ class DictionariesController < ApplicationController
 
   def update
     if @dictionary.update(dictionary_params)
-      redirect_to @dictionary, notice: 'Dictionary was successfully updated.'
+      select_and_view
     else
       render :edit
     end
@@ -39,13 +36,18 @@ class DictionariesController < ApplicationController
 
   def destroy
     @dictionary.destroy
-    redirect_to dictionaries_url, notice: 'Dictionary was successfully destroyed.'
+    redirect_to dictionaries_path, notice: 'Dictionary was successfully destroyed.'
   end
 
   private
 
     def set_dictionary
       @dictionary = current_user.dictionaries.find(params[:id])
+    end
+
+    def select_and_view
+      current_user.update_column(:current_dictionary_id, @dictionary.id)
+      redirect_to words_path
     end
 
     def dictionary_params

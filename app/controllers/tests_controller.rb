@@ -22,14 +22,20 @@ class TestsController < ApplicationController
   end
 
   def set_test
-    @test = @dictionary.tests.find(params[:id])
+    @test = current_user.tests.find(params[:id])
   end
 
   def get_new_test
+    if @dictionary.words.count < 10
+      flash[:error] = 'you must have 10 words to run a test'
+      redirect_to words_path
+      return
+    end
     Test.generate(@dictionary)
   end
 
   def set_dictionary
-    @dictionary = current_user.dictionaries.find(params[:dictionary_id])
+    @dictionary = current_user.current_dictionary
+    redirect_to dictionaries_path unless @dictionary
   end
 end

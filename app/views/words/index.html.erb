@@ -1,4 +1,21 @@
-<%= link_to 'Test me', new_dictionary_test_path(@dictionary) %>
+<% if flash[:notice].present? %>
+  <div class="flash flash-notice">
+    <%= flash[:notice] %>
+  </div>
+<% end %>
+<% if flash[:alert].present? %>
+  <div class="flash flash-alert">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+<div class="card">
+  <h2><%= @dictionary.name %>
+    <%= link_to 'i', edit_dictionary_path(@dictionary), class: 'button rename secondary' %>
+  </h2>
+</div>
+
+<%= link_to 'Test me', new_test_path %>
+
 
 <div class="table" id="words">
   <div class="table-head">
@@ -14,3 +31,5 @@
     <%= render @words %>
   </div>
 </div>
+<td></td>
+        <td></td>
