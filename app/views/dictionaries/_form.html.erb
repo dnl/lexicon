@@ -13,6 +13,16 @@
     <%= f.text_field :name, autofocus: true %>
   </div>
 
+  <div class="field">
+    <%= f.label :word_column_label, 'New language' %>
+    <%= f.text_field :word_column_label %>
+  </div>
+
+  <div class="field">
+    <%= f.label :translation_column_label, 'Familiar language' %>
+    <%= f.text_field :translation_column_label %>
+  </div>
+
   <div class="actions">
     <%= f.submit 'Save' %>
   </div>

@@ -11,16 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150207182051) do
+ActiveRecord::Schema.define(version: 20150207201951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "dictionaries", force: :cascade do |t|
-    t.integer  "user_id",    null: false
-    t.string   "name",       null: false
+    t.integer  "user_id",                                          null: false
+    t.string   "name",                                             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "word_column_label",        default: "Word",        null: false
+    t.string   "translation_column_label", default: "Translation", null: false
   end
 
   add_index "dictionaries", ["user_id"], name: "index_dictionaries_on_user_id", using: :btree

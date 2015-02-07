@@ -8,7 +8,10 @@ class Test < ActiveRecord::Base
     [:word,          :pronunciation],
     [:word,          :translation],
     [:pronunciation, :word],
-    [:translation,   :word]
+    [:translation,   :word],
+    [:word_upcase,   :translation],
+    [:word_upcase,   :word],
+    [:word_upcase,   :pronunciation]
   ]
 
   def self.generate(dictionary, test_type=TEST_TYPES.sample)
@@ -27,7 +30,11 @@ class Test < ActiveRecord::Base
   end
 
   def given_answer=(answer)
-    self.correct = answer == correct_answer
+    self.correct = is_answer?(answer)
     write_attribute(:given_answer, answer)
+  end
+
+  def is_answer?(answer)
+    correct_answer.unicode_normalize == answer.unicode_normalize
   end
 end

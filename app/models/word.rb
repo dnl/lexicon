@@ -10,7 +10,7 @@ class Word < ActiveRecord::Base
   def self.testable(*has_columns)
     order('RANDOM()').tap do |words|
       has_columns.each do |has_column|
-        words = words.where.not(has_column => nil)
+        words = words.where.not(Word.map_test_column(has_column) => nil)
       end
     end
   end
@@ -24,9 +24,26 @@ class Word < ActiveRecord::Base
     Word.testable(answer_column)
     .where.not(id:id)
     .limit(options)
-    .pluck(answer_column)
+    .to_a.map(&answer_column)
     .tap { |a| a << self.send(answer_column) }
     .shuffle
+  end
+
+  def word_upcase
+    word.mb_chars.upcase
+  end
+
+  def word_downcase
+    word.mb_chars.downcase
+  end
+
+  def self.map_test_column column
+    case column.to_sym
+    when :word_upcase, :word_downcase
+      :word
+    else
+      column
+    end
   end
 
 end

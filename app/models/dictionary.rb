@@ -6,4 +6,5 @@ class Dictionary < ActiveRecord::Base
   has_many :words, dependent: :destroy
   has_many :tests, dependent: :destroy
 
+
 end

@@ -19,6 +19,7 @@ class DictionariesController < ApplicationController
 
   def create
     @dictionary = Dictionary.new(dictionary_params)
+    @dictionary.user = current_user
     if @dictionary.save
       select_and_view
     else
@@ -51,6 +52,6 @@ class DictionariesController < ApplicationController
     end
 
     def dictionary_params
-      params.require(:dictionary).permit(:name).merge(user_id: current_user.id)
+      params.require(:dictionary).permit(:name, :word_column_label, :translation_column_label)
     end
 end
