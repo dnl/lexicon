@@ -1,0 +1,30 @@
+class CreateWords < ActiveRecord::Migration
+  def change
+    create_table :words do |t|
+      t.string :word, null: false
+      t.string :translation, null: false
+      t.string :pronunciation
+      t.integer :ability
+      t.references :dictionary
+      t.timestamps
+    end
+  end
+  def change
+    create_table :dictionary do |t|
+      t.string :name, null: false
+      t.references :user
+      t.timestamps
+    end
+  end
+  def change
+    create_table :test do |t|
+      t.references :word
+      t.references :dictionary
+      t.string :answer
+      t.boolean :correct
+      t.timestamps
+    end
+  end
+  def change
+    create_table :
+end

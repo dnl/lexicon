@@ -1,0 +1,11 @@
+<% if @test.correct? %>
+  <h1>Correct!</h1>
+  <strong><%= @test.question %></strong> is <strong><%= @test.correct_answer %></strong>
+<% else %>
+  <h1>Nope</h1>
+  <strong><%= @test.question %></strong> is actually <strong><%= @test.correct_answer %></strong>
+  <br>
+  (you said: <strong><%= @test.given_answer %></strong>)
+<% end -%>
+
+<%= link_to 'New question', new_dictionary_test_path(@dictionary) %>

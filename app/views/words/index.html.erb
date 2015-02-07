@@ -1,0 +1,16 @@
+<%= link_to 'Test me', new_dictionary_test_path(@dictionary) %>
+
+<div class="table" id="words">
+  <div class="table-head">
+    <div class="table-row">
+      <div class="cell">word</div>
+      <div class="cell">translation</div>
+      <div class="cell">pronunciation</div>
+    </div>
+  </div>
+
+  <div class="table-body">
+    <%= render partial: 'form' %>
+    <%= render @words %>
+  </div>
+</div>

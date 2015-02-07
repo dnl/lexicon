@@ -1,0 +1,7 @@
+<div id="<%= dom_id(word) %>" class="table-row">
+  <div class="cell"><%= word.word %></div>
+  <div class="cell"><%= word.translation %></div>
+  <div class="cell"><%= word.pronunciation %></div>
+  <div class="cell"><%= link_to 'Edit', edit_dictionary_word_path(@dictionary, word), remote: true %></div>
+  <div class="cell"><%= link_to 'Destroy', [@dictionary,word], method: :delete, data: { confirm: 'Are you sure?', remote: true } %></div>
+</div>

@@ -1,0 +1,6 @@
+<h1><%= @test.question %></h1>
+<%= form_for [@dictionary, @test] do |f| %>
+  <% @test.options.each do |option| %>
+    <%= f.button option, name: :'test[given_answer]', value: option %>
+  <% end %>
+<% end -%>
