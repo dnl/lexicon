@@ -22,6 +22,7 @@ class Word < ActiveRecord::Base
   def answers(answer_column, options = 3)
     return [] if options.zero? || options.nil?
     Word.testable(answer_column)
+    .where(dictionary_id:dictionary_id)
     .where.not(id:id)
     .limit(options)
     .to_a.map(&answer_column)
