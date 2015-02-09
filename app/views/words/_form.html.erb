@@ -1,17 +1,17 @@
 <%= form_for(@word, remote: true, html: {class: 'table-row', id: dom_id(@word)}) do |f| %>
-  <div class="cell word">
+  <div class="cell word input">
     <div class="input-wrapper">
-      <%= f.text_field :word, class: 'word', autofocus: true %>
+      <%= f.text_field :word, class: 'word', autofocus: true, placeholder: @dictionary.word_column_label %>
     </div>
   </div>
-  <div class="cell translation">
+  <div class="cell translation input">
     <div class="input-wrapper">
-      <%= f.text_field :translation, class: 'translation' %>
+      <%= f.text_field :translation, class: 'translation', placeholder: @dictionary.translation_column_label %>
     </div>
   </div>
-  <div class="cell pronunciation">
+  <div class="cell pronunciation input">
     <div class="input-wrapper">
-      <%= f.text_field :pronunciation, class: 'pronunciation' %>
+      <%= f.text_field :pronunciation, class: 'pronunciation', placeholder: t('label.pronunciation') %>
     </div>
   </div>
   <div class="cell action">

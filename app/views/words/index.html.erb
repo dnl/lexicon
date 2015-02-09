@@ -13,7 +13,7 @@
     <%= link_to 'i', edit_dictionary_path(@dictionary), class: 'button settings-button secondary' %>
   </h2>
   <%# not a real table for a: responsive and b: row=form reasons. %>
-  <div class="table" id="words">
+  <div class="table words" id="words">
     <div class="table-head">
       <div class="table-row">
         <div class="cell word"><%= @dictionary.word_column_label %></div>
@@ -23,6 +23,9 @@
       </div>
     </div>
     <div class="table-body">
+      <div class="table-row field-label-row">
+        <div class="cell field-label">New word</div>
+      </div>
       <%= render partial: 'form' %>
       <%= render @words %>
     </div>

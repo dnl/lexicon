@@ -35,7 +35,7 @@ Todo
 
 - [x] label test boxes (1)
 - [x] dictionary settings from test screen (probably just another little _(i)_ ) (1)
-- [ ] wordlist mobile width (currently landscape _probably_ works, provided you're learning short words) (8)
+- [x] wordlist mobile width (currently landscape _probably_ works, provided you're learning short words) (8)
 - [ ] Tests first untested words (2)
 - [ ] Then tests first words you've made mistakes on recently (2)
 - [ ] Split on commas and randomly select comma for q and a (2)

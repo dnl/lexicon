@@ -1,6 +1,6 @@
 @import "variables.scss";
 
-button, a.button, input[type="submit"], .form form ~ a {
+button, .button, input[type="submit"], .form form ~ a {
   -webkit-appearance:none;
   border-radius:5px;
   padding:5px;
@@ -22,7 +22,8 @@ button, a.button, input[type="submit"], .form form ~ a {
   &.secondary {
     color:#aaa;
   }
-  &:hover, &:focus, &:active, .actions & {
+  &:hover, &:focus, &:active, .actions &,
+  a:hover &, a:focus &, a:active & {
     background-color: $highlight;
     color: white;
     outline:none;
@@ -33,8 +34,10 @@ button, a.button, input[type="submit"], .form form ~ a {
   nav & {
     display:inline;
   }
-  .cell.action & {
+  .cell.action &, .small {
     font-size:12px;
+    padding-top:3px;
+    padding-bottom:3px;
   }
   .actions & {
     width:100%;
