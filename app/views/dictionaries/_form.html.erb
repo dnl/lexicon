@@ -4,7 +4,7 @@
   </div>
 <% end %>
 <div class="form card">
-  <h2><%= @dictionary.persisted? ? 'Rename' : 'New' %> dictionary</h2>
+  <h2><%= @dictionary.persisted? ? 'Edit settings' : 'New Dictionary' %></h2>
 
   <%= form_for(@dictionary) do |f| %>
 
@@ -29,7 +29,8 @@
       <div>
         <%= %>
         <%= f.check_box :"test_type_ids", {multiple: true, id: "test_type_ids_#{i}"}, i, nil %>
-        <label for="test_type_ids_<%= i %>"><%=t [:test_type, *type].join('.'), word: @dictionary.word_column_label, translation: @dictionary.translation_column_label %></label>
+        <label for="test_type_ids_<%= i %>">
+          <%=t 'label.q_a', q: @dictionary.label_for_column(type.first), a: @dictionary.label_for_column(type.last) %></label>
       </div>
     <% end -%>
   </div>

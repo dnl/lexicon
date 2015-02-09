@@ -45,4 +45,20 @@ button, a.button, input[type="submit"], .form form ~ a {
       background-color:$text-color;
     }
   }
+  &.settings-button {
+    font-size:15px;
+    display:inline;
+    position:absolute;
+    right:10px;
+    vertical-align:middle;
+    top:10px;
+    font-family: $serif;
+    font-style:italic;
+    text-transform:none;
+    line-height:15px;
+    height:20px;
+    width:20px;
+    text-align:center;
+    border-radius:10px;
+  }
 }

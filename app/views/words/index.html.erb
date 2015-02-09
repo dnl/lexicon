@@ -10,7 +10,7 @@
 <% end %>
 <div class="card">
   <h2><%= @dictionary.name %>
-    <%= link_to 'i', edit_dictionary_path(@dictionary), class: 'button rename secondary' %>
+    <%= link_to 'i', edit_dictionary_path(@dictionary), class: 'button settings-button secondary' %>
   </h2>
   <%# not a real table for a: responsive and b: row=form reasons. %>
   <div class="table" id="words">

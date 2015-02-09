@@ -21,20 +21,8 @@
   border-top-right-radius:5px;
   position:relative;
   vertical-align:middle;
-  .rename {
-    font-size:15px;
-    display:inline;
-    position:absolute;
-    right:10px;
-    vertical-align:middle;
+  .settings-button {
     top:15px;
-    font-family: $serif;
-    font-style:italic;
-    text-transform:none;
-    line-height:15px;
-    height:20px;
-    width:20px;
-    border-radius:10px;
   }
 }
 .form.card .field,

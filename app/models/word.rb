@@ -10,7 +10,7 @@ class Word < ActiveRecord::Base
   def self.testable(*has_columns)
     order('RANDOM()').tap do |words|
       has_columns.each do |has_column|
-        words = words.where.not(Word.map_test_column(has_column) => nil)
+        words = words.where.not(map_test_column(has_column) => nil)
       end
     end
   end
