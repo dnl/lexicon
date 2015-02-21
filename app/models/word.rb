@@ -1,6 +1,7 @@
 class Word < ActiveRecord::Base
 
   CASES = [:nominative, :vocative, :accusative, :genitive, :dative]
+  COMMON_CASES = [:nominative, :accusative, :genitive, :dative]
   PLURALITIES = [:singular, :plural]
   PERSONS = [:first_person, :second_person, :third_person]
 
@@ -8,11 +9,11 @@ class Word < ActiveRecord::Base
   DECLENSIONS = [:first_declension, :second_declension, :third_declension]
   TENSES = [:present] #more to come
 
-  ARTICLE_VARIANTS = { gender: GENDERS, plurality: PLURALITIES, case: CASES }
+  ARTICLE_VARIANTS = { gender: GENDERS, plurality: PLURALITIES, case: COMMON_CASES }
   VERB_VARIANTS = { person: PERSONS, plurality: PLURALITIES, tense: TENSES }
   NOUN_VARIANTS = { plurality: PLURALITIES, case: CASES }
   NOUN_PROPERTIES = { gender: GENDERS } #later: , declension: DECLENSIONS
-  PREPOSITION_PROPERTIES = { takes: CASES }
+  PREPOSITION_PROPERTIES = { takes: COMMON_CASES }
 
   CLASSES = {
     article: {variants: ARTICLE_VARIANTS},
@@ -32,7 +33,9 @@ class Word < ActiveRecord::Base
 
   accepts_nested_attributes_for :variants, reject_if: proc {|attributes| attributes[:word].blank? }
 
+  before_validation :remove_invalid_properties_variant
   before_validation :set_properties_from_root
+  before_validation :skip_blank_properties
 
   def self.testable(*has_columns)
     order('RANDOM()').tap do |words|
@@ -40,6 +43,19 @@ class Word < ActiveRecord::Base
         words = words.where.not(Test.map_columns(has_column) => nil)
       end
     end
+  end
+
+  def remove_invalid_properties_variant
+    if self.word_class_changed?
+      self.properties = nil unless self.properties_changed?
+      self.variant = nil unless variant_keys(true).include?(self.variant)
+    end
+    return true
+  end
+
+  def skip_blank_properties
+    self.properties = self.properties.select(&:present?) if self.properties.present?
+    return true
   end
 
   def set_properties_from_root
@@ -53,13 +69,14 @@ class Word < ActiveRecord::Base
   end
 
   def root
-    return self unless read_attribute(:root)
-    return read_attribute(:root)
+    return read_attribute(:root) if read_attribute(:root).present?
+    return self if self.persisted? && self.is_root? #persisted so we don't get a loop
     return Word.find(self.root_id) if self.root_id
   end
 
   def root_id
-    read_attribute(:root_id) || self.id
+    return read_attribute(:root_id) if read_attribute(:root_id).present?
+    return self.id if self.persisted? && self.is_root?
   end
 
   def missing_letters(answer_column)
@@ -151,12 +168,12 @@ class Word < ActiveRecord::Base
   def variant_keys(include_root=false)
     root_only = []
     return root_only unless word_class
-    variants = Word::CLASSES[word_class.to_sym][:variants]
-    return root_only unless variants
-    first, *rest = variants.values
-    variants = first.product(*rest)
-    return variants if include_root
-    return variants.drop(1)
+    keys = Word::CLASSES[word_class.to_sym][:variants]
+    return root_only unless keys
+    first, *rest = keys.values
+    keys = first.product(*rest)
+    return keys if include_root
+    return keys.drop(1)
   end
 
   def word_upcase
@@ -168,10 +185,9 @@ class Word < ActiveRecord::Base
   end
 
   def is_root?
-    return root_id == self.id || root_id.nil? if self.persisted?
-    return root_variant == self.read_attribute(:variant) if self.read_attribute(:variant).present?
-    return self.read_attribute(:variant).blank?
-
+    return self.read_attribute(:root_id) == self.id if self.root_id?
+    return self.read_attribute(:root_id).nil? if self.persisted?
+    return ((self.read_attribute(:variant) || []) - self.root_variant).blank?
   end
 
 end
