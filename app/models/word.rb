@@ -10,7 +10,7 @@ class Word < ActiveRecord::Base
   TENSES = [:present] #more to come
 
   ARTICLE_VARIANTS = { gender: GENDERS, plurality: PLURALITIES, case: COMMON_CASES }
-  VERB_VARIANTS = { person: PERSONS, plurality: PLURALITIES, tense: TENSES }
+  VERB_VARIANTS = { plurality: PLURALITIES, person: PERSONS, tense: TENSES }
   NOUN_VARIANTS = { plurality: PLURALITIES, case: CASES }
   NOUN_PROPERTIES = { gender: GENDERS } #later: , declension: DECLENSIONS
   PREPOSITION_PROPERTIES = { takes: COMMON_CASES }
