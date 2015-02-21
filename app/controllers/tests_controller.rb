@@ -18,7 +18,7 @@ class TestsController < ApplicationController
   private
 
   def test_params
-    params.require(:test).permit(:given_answer)
+    params.require(:test).permit(:given_answer, given_answer_array: [])
   end
 
   def set_test
@@ -26,7 +26,7 @@ class TestsController < ApplicationController
   end
 
   def get_new_test
-    if @dictionary.words.count < 10
+    if @dictionary.words.count < @dictionary.select_option_to + 5
       flash[:error] = 'you must have 10 words to run a test'
       redirect_to words_path
       return

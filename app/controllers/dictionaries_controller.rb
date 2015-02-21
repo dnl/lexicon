@@ -56,7 +56,8 @@ class DictionariesController < ApplicationController
         :name,
         :word_column_label,
         :translation_column_label,
-        test_type_ids: []
+        test_type_ids: [],
+        test_method_ids: []
       )
     end
 end

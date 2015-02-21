@@ -1,0 +1,31 @@
+<div class="table-row">
+  <div class="cell field-label">
+    <% if variant %>
+      <%= simple_format variant.join("\n").humanize %>
+      <% variant.each do |v| %>
+        <%= f.hidden_field :variant, value: v, name: :"#{f.object_name}[variant][]" %>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="cell word input">
+    <div class="input-wrapper">
+      <%= f.text_field :word, class: 'word', autofocus: word.is_root?, placeholder: @dictionary.word_column_label %>
+    </div>
+  </div>
+  <div class="cell translation input">
+    <div class="input-wrapper">
+      <%= f.text_field :translation, class: 'translation', placeholder: @dictionary.translation_column_label %>
+    </div>
+  </div>
+  <div class="cell pronunciation input">
+    <div class="input-wrapper">
+      <%= f.text_field :pronunciation, class: 'pronunciation', placeholder: t('label.pronunciation') %>
+    </div>
+  </div>
+  <div class="cell action">
+    <% if word.is_root? %>
+      <%= f.submit 'Save' %>
+      <%= link_to 'Delete', word, method: :delete, class: 'button destroy', data: { confirm: 'Are you sure?', remote: true } if word.persisted? %>
+    <% end %>
+  </div>
+</div>

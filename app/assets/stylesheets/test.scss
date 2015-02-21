@@ -15,6 +15,8 @@
   flex-flow: wrap;
   margin-left:-10px;
   flex-grow:1;
+  align-items:center;
+  justify-content:center;
 }
 .question {
   text-align:center;
@@ -30,6 +32,8 @@
   text-transform:none;
   font-family:$serif;
   margin-left:10px;
+  align-items:center;
+  justify-content:center;
 }
 .translation {
   color: #00d72b;
@@ -37,7 +41,22 @@
 .pronunciation {
   font-style:italic;
 }
-.answered .selected {
+.missing_letters {
+  background:#eee;
+  border-radius:10px;
+  padding:5px;
+
+}
+.letter {
+  width:1em;
+  font-size:inherit;
+  border-radius:5px;
+  border:0;
+  -webkit-appearance:none;
+}
+
+.answered .selected,
+.answered .letter {
   background:red;
   color:white;
 }

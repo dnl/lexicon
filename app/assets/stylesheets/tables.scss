@@ -39,12 +39,22 @@
     display: table-row-group;
   }
   .cell.field-label {
-    border:0;
     padding-top:3px;
     padding-bottom:0;
+    line-height:9px;
+    vertical-align:middle;
+    p {
+      margin:0;padding:0;
+    }
+  }
+  .field-label-inner {
+    white-space:nowrap;
+    width:0;
+    overflow:visible;
   }
   form .cell {
     position:relative;
+    border-bottom:0;
   }
   form .cell .input-wrapper {
     position:absolute;
@@ -54,12 +64,10 @@
     right:0px;
     height:42px;
   }
+
   form .cell.input {
     height:42px;
     border-left:1px solid $background;
-    &.word {
-      border-left:0;
-    }
   }
   form .cell input[type="text"] {
     border:0;
@@ -111,6 +119,7 @@
     }
     .cell.word, .cell.field-label {
       float:left;
+
     }
     .cell.translation {
       padding-bottom:0;

@@ -14,8 +14,39 @@ class Dictionary < ActiveRecord::Base
     self.exclude_test_types = Test::TEST_TYPE_IDS - test_type_ids.map(&:to_i)
   end
 
-  def label_for_column column
+  def test_types
+    Test::TEST_TYPES.values_at(*test_type_ids)
+  end
 
+  def test_method_ids
+    Test::TEST_METHOD_IDS - exclude_test_method_ids
+  end
+
+  def test_method_ids=(test_method_ids)
+    self.exclude_test_method_ids = Test::TEST_METHOD_IDS - test_method_ids.map(&:to_i)
+  end
+
+  def test_missing_letters?
+    test_method_ids.include? Test::TEST_METHODS.index(:missing_letters)
+  end
+
+  def test_select_option?
+    test_method_ids.include? Test::TEST_METHODS.index(:select_option)
+  end
+
+  def test_word
+    words.select('*, ( correct + 1) / (incorrect + 1 ) as ratio').order('ratio').limit(10).sample
+  end
+
+  def valid_option_count
+    rand(select_option_from..select_option_to) if test_select_option?
+  end
+
+  def valid_missing_letters_count
+    rand(missing_letters_from..missing_letters_to) if test_missing_letters?
+  end
+
+  def label_for_column column
     case column.to_sym
     when :word
       word_column_label
@@ -23,8 +54,8 @@ class Dictionary < ActiveRecord::Base
       I18n.t 'label.word_upcase', word: word_column_label
     when :translation
       translation_column_label
-    when :pronunciation
-      I18n.t 'label.pronunciation'
+    else
+      I18n.t "label.#{column}"
     end
   end
 end

@@ -17,6 +17,7 @@ button, .button, input[type="submit"], .form form ~ a {
   cursor:pointer;
   box-sizing:border-box;
   form &, h2 & {
+
     background:#eee;
   }
   &.secondary {

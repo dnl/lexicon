@@ -1,5 +1,5 @@
 $('#new_word').replaceWith('<%=j render partial: 'word', locals: {word: @word} %>');
 
-<% @word = Word.new(dictionary: @dictionary) %>
+<% @word = Word.new(dictionary: @dictionary, word_class:params[:word_class]) %>
 $('#words .table-body').prepend('<%= j render partial: 'form' %>');
 $('#new_word input[type="text"]').first().focus();

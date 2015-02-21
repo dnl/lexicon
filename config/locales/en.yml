@@ -3,3 +3,9 @@ en:
     word_upcase: 'Capitalised %{word}'
     pronunciation: Pronunciation
     q_a: '%{q} → %{a}'
+    missing_letters: Missing letters
+    select_option: Select from wordlist
+    variant_key: Variant
+    property: Property
+    word: Word
+    translation: Translation

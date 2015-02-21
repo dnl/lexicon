@@ -6,6 +6,9 @@
   br {
     display:none;
   }
+  .field-label br {
+    display:block;
+  }
 }
 .card h2 {
   color: darken($background, 10%);
@@ -21,6 +24,8 @@
   border-top-right-radius:5px;
   position:relative;
   vertical-align:middle;
+  flex-grow:1;
+  flex-shrink:1;
   .settings-button {
     top:15px;
   }
@@ -46,6 +51,9 @@
     position:absolute;
     top:0;
     padding:3px;
+    & + .checkbox-list {
+      margin-top:10px;
+    }
   }
   input[type="checkbox"], input[type="radio"] {
     margin:10px 0 10px 10px;

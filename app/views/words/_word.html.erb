@@ -1,5 +1,6 @@
 <%= link_to edit_word_path(word), remote: true, id: dom_id(word), class: 'table-row' do %>
-  <div class="cell word"><%= word.word %></div>
+    <div class="cell field-label"><%= word.word_class %></div>
+    <div class="cell word"><%= word.word %></div>
     <div class="cell translation"><%= word.translation %></div>
     <div class="cell pronunciation"><%= word.pronunciation %></div>
     <div class="cell action"><span class="button">Edit</span>

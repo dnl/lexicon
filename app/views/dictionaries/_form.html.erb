@@ -24,10 +24,20 @@
   </div>
 
   <div class="field">
+    <%= f.label :test_method_ids, 'Test methods' %>
+    <% Test::TEST_METHODS.each_with_index do |method, i| %>
+      <div class="checkbox-list">
+        <%= f.check_box :"test_method_ids", {multiple: true, id: "test_method_ids_#{i}"}, i, nil %>
+        <label for="test_method_ids_<%= i %>">
+          <%=t "label.#{method}" %></label>
+      </div>
+    <% end -%>
+  </div>
+
+  <div class="field">
     <%= f.label :test_type_ids, 'Test types' %>
     <% Test::TEST_TYPES.each_with_index do |type, i| %>
-      <div>
-        <%= %>
+      <div class="checkbox-list">
         <%= f.check_box :"test_type_ids", {multiple: true, id: "test_type_ids_#{i}"}, i, nil %>
         <label for="test_type_ids_<%= i %>">
           <%=t 'label.q_a', q: @dictionary.label_for_column(type.first), a: @dictionary.label_for_column(type.last) %></label>

@@ -16,18 +16,19 @@
   <div class="table words" id="words">
     <div class="table-head">
       <div class="table-row">
+        <div class="cell"></div>
         <div class="cell word"><%= @dictionary.word_column_label %></div>
         <div class="cell translation"><%= @dictionary.translation_column_label %></div>
         <div class="cell pronunciation">Pronunciation</div>
         <div class="cell"></div>
       </div>
-    </div>
-    <div class="table-body">
       <div class="table-row field-label-row">
-        <div class="cell field-label">New word</div>
+        <div class="cell field-label">
+          <div class="field-label-inner">New word</div>
+        </div>
       </div>
-      <%= render partial: 'form' %>
-      <%= render @words %>
     </div>
+    <%= render partial: 'form' %>
+    <%= render @words %>
   </div>
 </div>

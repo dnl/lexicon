@@ -1,21 +1,22 @@
-<%= form_for(@word, remote: true, html: {class: 'table-row', id: dom_id(@word)}) do |f| %>
-  <div class="cell word input">
-    <div class="input-wrapper">
-      <%= f.text_field :word, class: 'word', autofocus: true, placeholder: @dictionary.word_column_label %>
+<%= form_for(@word, remote: true, html: {class: 'table-body', id: dom_id(@word)}) do |f| %>
+
+  <div class="table-row">
+    <div class="cell">
+      <div class="field-label-inner">
+      <%= f.select :word_class, word_classes, {prompt: '-word class-'}, class: 'word_class' %>
+      <% @word.property_options.each do |property, options| %>
+        <%= f.select :"properties",
+          options_for_select(options.map {|w| [w.to_s.humanize, w.to_s]}, @word.property_included_in(options) ),
+          {include_blank: (@word.property_included_in(options) ? nil : "-#{property}-" )},
+           name: :"word[properties][]" %>
+      <% end %>
+      </div>
     </div>
   </div>
-  <div class="cell translation input">
-    <div class="input-wrapper">
-      <%= f.text_field :translation, class: 'translation', placeholder: @dictionary.translation_column_label %>
-    </div>
-  </div>
-  <div class="cell pronunciation input">
-    <div class="input-wrapper">
-      <%= f.text_field :pronunciation, class: 'pronunciation', placeholder: t('label.pronunciation') %>
-    </div>
-  </div>
-  <div class="cell action">
-    <%= f.submit 'Save' %>
-    <%= link_to 'Delete', @word, method: :delete, class: 'button destroy', data: { confirm: 'Are you sure?', remote: true } if @word.persisted? %>
-  </div>
+  <%= render partial: 'words/form_row', locals: { variant: @word.root_variant,  word: @word, f:f } %>
+  <% @word.variants_by_variant.each do |variant, word| %>
+    <%= f.fields_for :variants, word do |ff| %>
+      <%= render partial: 'words/form_row', locals: { variant: variant, word: word, f:ff } %>
+    <% end %>
+  <% end %>
 <% end %>

@@ -12,6 +12,7 @@ body, html {
 }
 .body {
   flex-grow:1;
+  flex-shrink:1;
   align-items:center;
   justify-content:center;
   display:flex;
