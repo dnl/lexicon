@@ -4,7 +4,7 @@ class WordsController < ApplicationController
   before_action :set_word, only: [:show, :edit, :update, :destroy]
 
   def index
-    @words = @dictionary.words.root_words.order(:word)
+    @words = @dictionary.words.root_words.order(:word).sort_by(&:word)
     @word = new_word
   end
 
