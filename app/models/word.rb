@@ -187,7 +187,7 @@ class Word < ActiveRecord::Base
   def is_root?
     return self.read_attribute(:root_id) == self.id if self.root_id?
     return self.read_attribute(:root_id).nil? if self.persisted?
-    return ((self.read_attribute(:variant) || []) - self.root_variant).blank?
+    return ((self.read_attribute(:variant) || []) - (self.root_variant || [])).blank?
   end
 
 end
