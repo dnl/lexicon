@@ -38,6 +38,12 @@
   .table-body {
     display: table-row-group;
   }
+  .table-body.hidden {
+    display: table-row-group !important;
+    & > * {
+      display:none;
+    }
+  }
   .cell.field-label {
     padding-top:3px;
     padding-bottom:0;
@@ -88,6 +94,9 @@
   }
 }
 
+.tail {
+  opacity: 0.5;
+}
 @media screen and (max-width:400px) {
   .words.table {
     display:block;

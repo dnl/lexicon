@@ -31,7 +31,7 @@ class TestsController < ApplicationController
       redirect_to words_path
       return
     end
-    Test.generate(@dictionary)
+    Test.generate(@dictionary, params)
   end
 
   def set_dictionary

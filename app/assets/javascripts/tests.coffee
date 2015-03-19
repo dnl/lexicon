@@ -11,3 +11,6 @@ $('body').on 'click', '.missing_letters input[type="submit"]', (e) ->
   .each ->
     if $(this).val() in $(this).data('correct').split(',')
       $(this).addClass('correct-answer')
+
+$('body').on 'click change focus blur', 'select.word_class', (e) ->
+  $(this).closest('form').find('.word-class-variant').addClass('hidden').select(".#{$(this).val()}").removeClass('hidden')

@@ -5,24 +5,9 @@
   <div class="test-label <%= test.answer_method %>"><%= @dictionary.label_for_column(test.answer_method) %></div>
 
   <div class="answers">
-    <% case test.test_method %>
-    <% when :missing_letters %>
-      <div class="missing_letters">
-        <% test.options.first.each_char.with_index do |letter, i| %><%#
-          %><% if letter == '*' %><%#
-             %><%= f.text_field :given_answer_array, name: :'test[given_answer_array][]', value: '', maxlength: 1, class: 'letter', cols: 1, data: {correct: test.correct_answer.split(/\s*,\s*/).map{|w| w[i]}.join(',') } %><%#
-           %><% else %><%#
-             %><%= f.hidden_field :given_answer_array, name: :'test[given_answer_array][]', value: letter %><%#
-             %><%= letter %><%#
-           %><% end %><%#
-         %><% end -%>
-         <%= f.submit 'Save' %>
-      </div>
-    <% when :select_option %>
-        <% test.options.each do |option| %>
-          <% option = random_comma_segment(option) %>
-          <%= f.button test_label(option, test.answer_method), name: :'test[given_answer]', value: option, class: "answer #{test.answer_method} #{' correct-answer' if test.is_answer?(option)}" %>
-        <% end %>
-    <% end %>
+      <% test.options.each do |option| %>
+        <% option = random_comma_segment(option) %>
+        <%= f.button test_label(option, test.answer_method), name: :'test[given_answer]', value: option, class: "answer #{test.answer_method} #{' correct-answer' if test.is_answer?(option)}" %>
+      <% end %>
   </div>
 <% end -%>

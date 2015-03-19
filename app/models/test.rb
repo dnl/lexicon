@@ -6,65 +6,31 @@ class Test < ActiveRecord::Base
 
   TEST_TYPES = [
     #question,       #answer
-    [:word,          :pronunciation],
-    [:word,          :translation],
-    [:pronunciation, :word],
-    [:translation,   :word],
-    [:word_upcase,   :translation],
-    [:word_upcase,   :word],
-    [:word_upcase,   :pronunciation],
-    [:translation,   :word_upcase],
-    [:pronunciation, :word_upcase],
-    [:word,          :word_upcase],
-    [:word,          :property],
-    [:word,          :variant_key],
-    [:variant_key,   :word]
+    [:term_with_case_taken, :translation],
+    [:term, :display_word_class],
+    [:term, :display_takes_case]
   ]
 
-  TEST_METHODS = [
-    # :missing_letters,
-    :select_option
-  ]
+  TEST_METHODS = []
 
   TEST_TYPE_IDS = (0..TEST_TYPES.length-1).to_a
   TEST_METHOD_IDS = (0..TEST_METHODS.length-1).to_a
 
-  def self.generate(dictionary, attempts=0)
-    raise ActiveRecord::RecordNotFound if attempts > 10
-    test_type = TEST_TYPES[dictionary.test_type_ids.sample]
-    test_word = dictionary.test_word
-    test_method_id = dictionary.test_method_ids.sample
-    test_method = TEST_METHODS[test_method_id]
-    test_type = valid_test_type(dictionary, test_word, test_method)
+  def self.generate(dictionary, params={}, attempts=0)
+    raise ActiveRecord::RecordNotFound if attempts > 60
+    test = Test.new(dictionary_id:dictionary.id)
+    test.word = Word.where(id:params[:word_id]).first if params[:word_id].present?
+    test.word ||= dictionary.test_word
 
-    return generate(dictionary, attempts+1) if test_type.nil?
-    only_variants = test_type.include?(:variant)
-    question_column, answer_column = test_type
+    test.question_method, test.answer_method = test.word.test_type
+    return generate(dictionary, params, attempts+1) if test.question_method.blank?
 
-    options = case test_method
-    when :select_option
-     test_word.options(answer_column, only_variants)
-    when :missing_letters
-      [test_word.missing_letters(answer_column)]
-    end
+    test.options = test.word.options(test.answer_method)
 
-    correct_answer = case answer_column
-    when :property
-      test_word.property_included_in(options)
-    else
-      test_word.send(answer_column)
-    end
-
-    create(
-      dictionary: dictionary,
-      word: test_word,
-      test_method_id: test_method_id,
-      question: test_word.send(question_column),
-      correct_answer: correct_answer,
-      options: options,
-      question_method: question_column,
-      answer_method: answer_column
-    )
+    test.correct_answer = test.word.send(test.answer_method)
+    test.question = test.word.send(test.question_method)
+    test.save!
+    test
   end
 
   def update_word_test_count
@@ -73,15 +39,6 @@ class Test < ActiveRecord::Base
         .first
         .increment!(self.correct? ? :correct : :incorrect)
     return true
-  end
-
-  def self.valid_test_type(dictionary, word, test_method)
-    dictionary.test_types.reject do |test_type|
-      (test_method == :missing_letters &&
-       Test.map_columns(test_type.last) != :word) ||
-      word.send(Test.map_columns(test_type.first)).blank? ||
-      word.send(Test.map_columns(test_type.last)).blank?
-    end.sample
   end
 
   def given_answer=(answer)
@@ -103,19 +60,6 @@ class Test < ActiveRecord::Base
 
   def self.normalize word
     word.unicode_normalize.mb_chars.downcase
-  end
-
-  def self.map_columns column
-    case column.to_sym
-    when :word_upcase, :word_downcase
-      :word
-    when :variant_key
-      :variant
-    when :property
-      :properties
-    else
-      column
-    end
   end
 
 end

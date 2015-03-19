@@ -1,193 +1,141 @@
 class Word < ActiveRecord::Base
 
-  CASES = [:nominative, :vocative, :accusative, :genitive, :dative]
-  COMMON_CASES = [:nominative, :accusative, :genitive, :dative]
-  PLURALITIES = [:singular, :plural]
-  PERSONS = [:first_person, :second_person, :third_person]
+    NUMBERS = [:singular, :plural]
 
-  GENDERS = [:masculine, :feminine, :neuter]
-  DECLENSIONS = [:first_declension, :second_declension, :third_declension]
-  TENSES = [:present] #more to come
 
-  ARTICLE_VARIANTS = { gender: GENDERS, plurality: PLURALITIES, case: COMMON_CASES }
-  VERB_VARIANTS = { plurality: PLURALITIES, person: PERSONS, tense: TENSES }
-  NOUN_VARIANTS = { plurality: PLURALITIES, case: CASES }
-  NOUN_PROPERTIES = { gender: GENDERS } #later: , declension: DECLENSIONS
-  PREPOSITION_PROPERTIES = { takes: COMMON_CASES }
+  include Noun
+  include Verb
+  include Preposition
+  include Adjective
 
-  CLASSES = {
-    article: {variants: ARTICLE_VARIANTS},
-    noun: {properties: NOUN_PROPERTIES, variants: NOUN_VARIANTS},
-    preposition: {properties: PREPOSITION_PROPERTIES},
-    verb: {variants: VERB_VARIANTS},
-    letter: {}
-  }
+  CLASSES = [
+    :adjective,
+    :article,
+    :noun,
+    :letter,
+    :preposition,
+    :pronoun,
+    :verb
+  ]
 
   belongs_to :dictionary
   validates :dictionary_id, presence: true
-  validates :word, presence: true
+  validates :lexical_form, presence: true, length: {minimum:1}
   delegate :user, to: :dictionary
   has_many :tests, dependent: :destroy
-  belongs_to :root, class_name: Word
-  has_many :variants, class_name: Word, foreign_key: :root_id, dependent: :destroy
 
-  accepts_nested_attributes_for :variants, reject_if: proc {|attributes| attributes[:word].blank? }
+  def display_word_class
+    return word_class if word_class.present?
+    return :preposition if preposition?
+    return :adjective if adjective?
+    return :noun if noun?
+    return :verb if verb?
+  end
 
-  before_validation :remove_invalid_properties_variant
-  before_validation :set_properties_from_root
-  before_validation :skip_blank_properties
+  def word_class
+    read_attribute(:word_class).to_sym if read_attribute(:word_class).present?
+  end
 
-  def self.testable(*has_columns)
-    order('RANDOM()').tap do |words|
-      has_columns.each do |has_column|
-        words = words.where.not(Test.map_columns(has_column) => nil)
+  def lexical_form=(entry)
+    word, translation = Word.split_lexical_form(entry)
+    write_attribute(:translation, translation) if translation.present?
+    write_attribute(:lexical_form, word)
+    entry
+  end
+
+  def lexical_form
+    read_attribute(:lexical_form) || ''
+  end
+
+  def term
+    term ||= lexical_form.strip.match(PREPOSITION_RE).try(:[], :term) if preposition?
+    term ||= lexical_form.strip.match(NOUN_RE).try(:[], :term) if nounish?
+    term ||= lexical_form.strip.match(ADJECTIVE_RE).try(:[], :term) if adjective?
+    term ||= lexical_form.strip
+  end
+
+  def lexical_tail
+    return preposition_lexical_tail if preposition?
+    return noun_lexical_tail if nounish?
+    return adjective_lexical_tail if adjective?
+  end
+
+  def self.split_lexical_form(lexical_form)
+    if lexical_form.include?("|")
+      lexical_form.strip.split(/\s*\|\s*/)
+    else
+      lexical_form.strip
+    end
+  end
+
+  def self.import(dictionary_id, words)
+    words.each_line do |line|
+      next if line.starts_with?('#') #it's a comment
+      entry, translation = split_lexical_form(line.strip)
+      unless where(lexical_form:entry, dictionary_id: dictionary_id).exists?
+        #only modify new things.
+        create(lexical_form: line.strip, dictionary_id: dictionary_id)
       end
     end
   end
 
-  def remove_invalid_properties_variant
-    if self.word_class_changed?
-      self.properties = nil unless self.properties_changed?
-      self.variant = nil unless variant_keys(true).include?(self.variant)
-    end
-    return true
-  end
-
-  def skip_blank_properties
-    self.properties = self.properties.select(&:present?) if self.properties.present?
-    return true
-  end
-
-  def set_properties_from_root
-    unless is_root?
-      self.word_class = root.word_class
-      self.properties = root.properties
-      self.dictionary_id = root.dictionary_id
-      self.translation = root.translation if self.translation.blank?
-    end
-    return true
-  end
-
-  def root
-    return read_attribute(:root) if read_attribute(:root).present?
-    return self if self.persisted? && self.is_root? #persisted so we don't get a loop
-    return Word.find(self.root_id) if self.root_id
-  end
-
-  def root_id
-    return read_attribute(:root_id) if read_attribute(:root_id).present?
-    return self.id if self.persisted? && self.is_root?
-  end
-
-  def missing_letters(answer_column)
-    word_missing_letters = send(answer_column).split(/\s*,\s*/).sample
-    indexes = (0..(word_missing_letters.length - 1)).to_a
-    to_miss = [word_missing_letters.length, dictionary.valid_missing_letters_count].min
-    indexes.sample(to_miss).each do |index|
-      word_missing_letters[index] = '*'
-    end
-    word_missing_letters
-  end
-
-  def options(answer_column, only_variants)
-    case answer_column
-    when :properties, :property
-      property_test_options
+  def stem
+    @stem ||=
+    case display_word_class
+    when :noun, :pronoun
+      noun_stem
+    when :verb
+      verb_stem
     else
-      dictionary_test_options(answer_column, only_variants)
+      term
     end
   end
 
-  def variant_key
-    variant.join('|') if variant.present?
+  #accents were futzing with sorting.
+  def sort_term
+    term.mb_chars.downcase.gsub(/[ἀἁᾀᾁ]/, 'α')
+                          .gsub(/[ἐἑ]/,   'ε')
+                          .gsub(/[ἠἡᾐᾑ]/, 'η')
+                          .gsub(/[ἰἱ]/,   'ι')
+                          .gsub(/[ὀὁ]/,   'ο')
+                          .gsub(/[ὐὑ]/,   'υ')
+                          .gsub(/[ὠὡᾠᾡ]/, 'ω')
   end
 
-  def property_test_options
-    property = properties.sample.to_sym
-    property_options.values.find{|v| v.include?(property)}
+  ######
+
+  def options(answer_method)
+    case answer_method.to_sym
+    when :word_class, :display_word_class
+      CLASSES.map(&:to_s)
+    when :takes_case, :display_takes_case
+      ['accusative', 'genitive', 'dative']
+    when :translation
+      dictionary_test_options(answer_method)
+    end
   end
 
-  def dictionary_test_options(answer_column, only_variants=false)
-    options = Word.testable(answer_column)
+  def dictionary_test_options(answer_method)
+    options = Word
               .where(dictionary_id:dictionary_id)
               .where.not(id:id)
               .where(word_class:self.word_class)
               .limit(dictionary.valid_option_count)
-    if only_variants
-      options = options.where(root_id:self.root_id)
-    end
-    options.to_a.map(&answer_column)
-    .tap { |a| a << self.send(answer_column) }
+    options.to_a.map(&answer_method.to_sym)
+    .tap { |a| a << self.send(answer_method.to_sym) }
     .shuffle
   end
 
-  def self.variant(key)
-    if key.blank?
-      root_words
-    else
-      where("variant @> ARRAY[?]::varchar[]", key)
-    end
+  def test_type
+    dictionary.test_types.reject do |test_type|
+      send(test_type.first).blank? ||
+      send(test_type.last).blank?
+    end.sample
   end
 
-  def self.root_words
-    where('words.root_id = words.id OR words.root_id IS NULL')
-  end
-
-  def variants_by_variant(include_root=false)
-    variant_keys(include_root).map do |key|
-      if self.root.try(:persisted?)
-        [key,
-         Word.where(root_id:self.root_id)
-             .variant(key)
-             .first_or_initialize(variant:key,word_class:word_class)]
-      else
-        [key, Word.new(variant:key,word_class:word_class,root:self.root)]
-      end
-    end.to_h
-  end
-
-  def variant
-    read_attribute(:variant) ||
-    (root_variant if is_root?)
-  end
-
-  def property_included_in options
-    return nil if self.properties.blank?
-    (self.properties & options.map(&:to_s)).first
-  end
-
-  def root_variant
-    variant_keys(true).first
-  end
-
-  def property_options
-    return [] unless word_class
-    Word::CLASSES[word_class.to_sym][:properties] || []
-  end
-
-  def variant_keys(include_root=false)
-    root_only = []
-    return root_only unless word_class
-    keys = Word::CLASSES[word_class.to_sym][:variants]
-    return root_only unless keys
-    first, *rest = keys.values
-    keys = first.product(*rest)
-    return keys if include_root
-    return keys.drop(1)
-  end
-
-  def word_upcase
-    word.mb_chars.upcase
-  end
-
-  def word_downcase
-    word.mb_chars.downcase
-  end
-
-  def is_root?
-    return self.read_attribute(:root_id) == self.id if self.root_id?
-    return self.read_attribute(:root_id).nil? if self.persisted?
-    return ((self.read_attribute(:variant) || []) - (self.root_variant || [])).blank?
+  def ending(variant)
+    return noun_ending(variant) if nounish?
+    return verb_ending(variant) if verb?
   end
 
 end

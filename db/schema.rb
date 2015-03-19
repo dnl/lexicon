@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150221150311) do
+ActiveRecord::Schema.define(version: 20150318002647) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,18 +68,53 @@ ActiveRecord::Schema.define(version: 20150221150311) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   create_table "words", force: :cascade do |t|
-    t.string   "word",                      null: false
+    t.string   "lexical_form",                              null: false
     t.string   "translation"
-    t.string   "pronunciation"
     t.integer  "dictionary_id"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
     t.string   "word_class"
-    t.string   "properties",                             array: true
-    t.string   "variant",                                array: true
-    t.integer  "root_id"
-    t.integer  "correct",       default: 0, null: false
-    t.integer  "incorrect",     default: 0, null: false
+    t.integer  "correct",                       default: 0, null: false
+    t.integer  "incorrect",                     default: 0, null: false
+    t.string   "singular_nominative"
+    t.string   "singular_vocative"
+    t.string   "singular_accusative"
+    t.string   "singular_genitive"
+    t.string   "singular_dative"
+    t.string   "plural_nominative"
+    t.string   "plural_accusative"
+    t.string   "plural_genitive"
+    t.string   "plural_dative"
+    t.string   "feminine_singular_nominative"
+    t.string   "feminine_singular_vocative"
+    t.string   "feminine_singular_accusative"
+    t.string   "feminine_singular_genitive"
+    t.string   "feminine_singular_dative"
+    t.string   "feminine_plural_nominative"
+    t.string   "feminine_plural_accusative"
+    t.string   "feminine_plural_genitive"
+    t.string   "feminine_plural_dative"
+    t.string   "masculine_singular_nominative"
+    t.string   "masculine_singular_vocative"
+    t.string   "masculine_singular_accusative"
+    t.string   "masculine_singular_genitive"
+    t.string   "masculine_singular_dative"
+    t.string   "masculine_plural_nominative"
+    t.string   "masculine_plural_accusative"
+    t.string   "masculine_plural_genitive"
+    t.string   "masculine_plural_dative"
+    t.string   "singular_first"
+    t.string   "singular_second"
+    t.string   "singular_third"
+    t.string   "plural_first"
+    t.string   "plural_second"
+    t.string   "plural_third"
+    t.string   "future_singular_first"
+    t.string   "future_singular_second"
+    t.string   "future_singular_third"
+    t.string   "future_plural_first"
+    t.string   "future_plural_second"
+    t.string   "future_plural_third"
   end
 
   add_foreign_key "dictionaries", "users"

@@ -38,12 +38,12 @@ class Dictionary < ActiveRecord::Base
     words.select('*, ( correct + 1) / (incorrect + 1 ) as ratio').order('ratio').limit(10).sample
   end
 
-  def valid_option_count
-    rand(select_option_from..select_option_to) if test_select_option?
+  def import(words)
+    Word.import(self.id, words)
   end
 
-  def valid_missing_letters_count
-    rand(missing_letters_from..missing_letters_to) if test_missing_letters?
+  def valid_option_count
+    rand(select_option_from..select_option_to)
   end
 
   def label_for_column column

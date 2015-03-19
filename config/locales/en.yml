@@ -9,3 +9,8 @@ en:
     property: Property
     word: Word
     translation: Translation
+    term: Greek Term
+    term_with_case_taken: Greek Term
+    word_class: Class
+    display_word_class: Class
+    display_takes_case: Preposition case

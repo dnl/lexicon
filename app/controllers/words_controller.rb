@@ -4,7 +4,7 @@ class WordsController < ApplicationController
   before_action :set_word, only: [:show, :edit, :update, :destroy]
 
   def index
-    @words = @dictionary.words.root_words.order(:word).sort_by(&:word)
+    @words = @dictionary.words.where(search_params).sort_by(&:sort_term)
     @word = new_word
   end
 
@@ -19,11 +19,7 @@ class WordsController < ApplicationController
     @word = Word.new(word_params)
     if @word.save
       if request.xhr?
-        if @word.previous_changes[:word_class].present? && @word.variant_keys.present?
-          render :new
-        else
-          render :create
-        end
+        render :create
       else
         redirect_to words_path
       end
@@ -36,11 +32,7 @@ class WordsController < ApplicationController
   def update
     if @word.update(word_params)
       if request.xhr?
-        if @word.previous_changes[:word_class].present? && @word.variant_keys.present?
-          render :edit
-        else
-          render :update
-        end
+        render :update
       else
         redirect_to words_path
       end
@@ -74,26 +66,19 @@ class WordsController < ApplicationController
     end
 
     def new_word
-      Word.new(dictionary: @dictionary, word_class: Word.where.not(word_class:nil).limit(1).order(id: :desc).pluck(:word_class).first)
+      Word.new(dictionary: @dictionary)
     end
 
     # Only allow a trusted parameter "white list" through.
     def word_params
       params.require(:word).permit(
         :word_class,
-        :word,
-        :translation,
-        :pronunciation,
-        :variant => [],
-        :properties => [],
-        :variants_attributes => [
-          :_destroy,
-          :id,
-          :word,
-          :translation,
-          :pronunciation,
-          :variant => []
-        ]
+        :lexical_form,
+        :translation
       ).merge(dictionary_id: @dictionary.id)
+    end
+
+    def search_params
+      params.permit(:word_class)
     end
 end
