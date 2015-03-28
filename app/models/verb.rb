@@ -12,6 +12,10 @@ module Verb
     verb?
   end
 
+  def verb_term
+    lexical_form
+  end
+
   PERSONS = [:first, :second, :third]
   TENSES = [:present, :future]
 

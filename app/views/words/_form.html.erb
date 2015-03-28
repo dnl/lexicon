@@ -19,8 +19,31 @@
     </div>
   </div>
 
+  <%# adjective stuff %>
+  <div class="table-row word-class-variant adjective article <%= 'hidden' unless @word.adjective? %>">
+    <div class="cell"></div>
+  <% Noun::GENDERS.each do |gender| %>
+    <div class="cell field-label"><%= gender.to_s.humanize %></div>
+  <% end %>
+  </div>
+
+  <% Noun::NOUN_VARIANTS.each do |variant| %>
+    <div class="table-row word-class-variant adjective article <%= 'hidden' unless @word.adjective? %>">
+      <div class="cell word-class field-label">
+        <%= variant.to_s.humanize %>
+      </div>
+      <% Noun::GENDERS.each do |gender| %>
+        <div class="cell word input">
+          <div class="input-wrapper">
+            <%= f.text_field :"#{gender}_#{variant}", class: 'variant', placeholder: f.object.send(:"display_#{gender}_#{variant}") %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
   <%# verb stuff %>
-  <div class="table-row word-class-variant noun pronoun <%= 'hidden' unless @word.verb? %>">
+  <div class="table-row word-class-variant verb <%= 'hidden' unless @word.verb? %>">
     <div class="cell"></div>
   <% Verb::TENSES.each do |tense| %>
     <div class="cell field-label"><%= tense.to_s.humanize %></div>

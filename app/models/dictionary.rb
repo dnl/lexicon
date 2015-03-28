@@ -34,8 +34,12 @@ class Dictionary < ActiveRecord::Base
     test_method_ids.include? Test::TEST_METHODS.index(:select_option)
   end
 
-  def test_word
+  def test_word_sql
     words.select('*, ( correct + 1) / (incorrect + 1 ) as ratio').order('ratio').limit(10).sample
+  end
+
+  def test_word
+    Word.find(Pickup.new(words.select('id, correct, incorrect').to_a, key_func: Proc.new(&:id), weight_func: Proc.new(&:weight)).pick{|v| v**2})
   end
 
   def import(words)

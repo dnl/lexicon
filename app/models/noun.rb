@@ -12,7 +12,7 @@ module Noun
                                .map {|n| n.map(&:to_s).join('_').to_sym }
                                .reject { |w| w == :plural_vocative}
 
-  NOUN_GENDERS = [
+  GENDERS = [
     :masculine,
     :feminine,
     :neuter
@@ -110,6 +110,10 @@ module Noun
     noun_declension
   end
 
+  def noun_term
+    lexical_form.match(NOUN_RE).try(:[], :term) || lexical_form
+  end
+
   def noun_stem
     case self.declension
     when '3.6'
@@ -121,7 +125,7 @@ module Noun
     end
   end
 
-  NOUN_VARIANTS.each.with_index do |variant|
+  NOUN_VARIANTS.each do |variant|
     define_method("display_#{variant}") do
       return send(variant) if send(variant).present?
       return stem + ending(variant) if regular_noun? && ending(variant)

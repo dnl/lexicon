@@ -44,14 +44,14 @@ class Word < ActiveRecord::Base
   end
 
   def lexical_form
-    read_attribute(:lexical_form) || ''
+    read_attribute(:lexical_form).try(:strip) || ''
   end
 
   def term
-    term ||= lexical_form.strip.match(PREPOSITION_RE).try(:[], :term) if preposition?
-    term ||= lexical_form.strip.match(NOUN_RE).try(:[], :term) if nounish?
-    term ||= lexical_form.strip.match(ADJECTIVE_RE).try(:[], :term) if adjective?
-    term ||= lexical_form.strip
+    return preposition_term if preposition?
+    return noun_term if nounish?
+    return adjective_term if adjective?
+    return lexical_form
   end
 
   def lexical_tail
@@ -79,6 +79,10 @@ class Word < ActiveRecord::Base
     end
   end
 
+  def weight
+    (incorrect + 1).to_f / (correct + 1)
+  end
+
   def stem
     @stem ||=
     case display_word_class
@@ -86,6 +90,8 @@ class Word < ActiveRecord::Base
       noun_stem
     when :verb
       verb_stem
+    when :adjective
+      adjective_stem
     else
       term
     end
@@ -119,8 +125,9 @@ class Word < ActiveRecord::Base
     options = Word
               .where(dictionary_id:dictionary_id)
               .where.not(id:id)
-              .where(word_class:self.word_class)
               .limit(dictionary.valid_option_count)
+              .order('RANDOM()')
+              #.where(word_class:self.word_class)
     options.to_a.map(&answer_method.to_sym)
     .tap { |a| a << self.send(answer_method.to_sym) }
     .shuffle
