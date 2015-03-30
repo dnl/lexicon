@@ -14,3 +14,10 @@ en:
     word_class: Class
     display_word_class: Class
     display_takes_case: Preposition case
+    term_variant: Greek Term (variant)
+    display_gender: Gender
+    gender: Gender
+    case: Case
+    person: Person
+    tense: Tense
+    number: Number

@@ -19,8 +19,9 @@ module Verb
   PERSONS = [:first, :second, :third]
   TENSES = [:present, :future]
 
-  VERB_VARIANTS = Word::NUMBERS.product(PERSONS)
-                               .map {|n| n.map(&:to_s).join('_').to_sym }
+  VERB_VARIANT_COMBINATIONS = Word::NUMBERS.product(PERSONS)
+  VERB_VARIANT_COLUMNS = [:number, :person]
+  VERB_VARIANTS = VERB_VARIANT_COMBINATIONS.map {|n| n.map(&:to_s).join('_').to_sym }
 
 
   VERB_ENDINGS = {

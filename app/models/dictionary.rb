@@ -59,7 +59,7 @@ class Dictionary < ActiveRecord::Base
     when :translation
       translation_column_label
     else
-      I18n.t "label.#{column}"
+      I18n.t "label.#{column}", default: ''
     end
   end
 end

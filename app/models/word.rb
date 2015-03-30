@@ -110,12 +110,45 @@ class Word < ActiveRecord::Base
 
   ######
 
+  def variants
+    return Noun::NOUN_VARIANTS if nounish?
+    return Verb::VERB_VARIANTS if verb?
+    return []
+  end
+
+  def variant_columns
+    return Noun::NOUN_VARIANT_COLUMNS if nounish?
+    return Verb::VERB_VARIANT_COLUMNS if verb?
+    return []
+  end
+
+  def variant_combinations
+    return Noun::NOUN_VARIANT_COMBINATIONS if nounish?
+    return Verb::VERB_VARIANT_COMBINATIONS if verb?
+    return []
+  end
+
+  def variants_with_answer(answer_method)
+    column_index = variant_columns.index(answer_method)
+    return [] unless column_index
+    answers = variant_combinations.map { |v| v[column_index] }
+    variants.map{|v|:"display_#{v}"}.zip(answers)
+  end
+
   def options(answer_method)
     case answer_method.to_sym
     when :word_class, :display_word_class
       CLASSES.map(&:to_s)
     when :takes_case, :display_takes_case
-      ['accusative', 'genitive', 'dative']
+      Preposition::PREPOSITION_CASES.map(&:to_s)
+    when :case, *Noun::CASES
+      Noun::CASES.map(&:to_s)
+    when *Verb::PERSONS
+      Verb::PERSONS.map(&:to_s)
+    when :display_gender, *Noun::GENDERS
+      Noun::GENDERS.map(&:to_s)
+    when :number, *Word::NUMBERS
+      Word::NUMBERS.map(&:to_s)
     when :translation
       dictionary_test_options(answer_method)
     end
@@ -133,16 +166,41 @@ class Word < ActiveRecord::Base
     .shuffle
   end
 
-  def test_type
+  def expanded_test_types
+    variant_types = []
     dictionary.test_types.reject do |test_type|
-      send(test_type.first).blank? ||
-      send(test_type.last).blank?
-    end.sample
+      if test_type.first == :term_variant
+        if variant_columns.include?(test_type.last)
+          variant_types += variants_with_answer(test_type.last)
+        else
+          variant_types += variants.map {|v| [v, test_type.last] }
+        end
+        true
+      else
+        false
+      end
+    end + variant_types
+  end
+
+  def test_types
+    expanded_test_types.reject do |test_type|
+      method_or_symbol(test_type.first).to_s.blank? ||
+      method_or_symbol(test_type.last ).to_s.blank?
+    end
+  end
+
+  def test_type
+    test_types.sample
   end
 
   def ending(variant)
     return noun_ending(variant) if nounish?
     return verb_ending(variant) if verb?
+  end
+
+  def method_or_symbol(symbol)
+    return send(symbol) if self.respond_to?(symbol)
+    return symbol
   end
 
 end

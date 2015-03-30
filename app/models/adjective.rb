@@ -5,12 +5,16 @@ module Adjective
     (?<neuter_declension_hint>[\p{Greek}'’]+)\s*
   $/x
 
+  ADJECTIVE_VARIANT_COMBINATIONS = Noun::GENDERS.product(Noun::NOUN_VARIANT_COMBINATIONS).map(&:flatten)
+  ADJECTIVE_VARIANTS = Adjective::ADJECTIVE_VARIANT_COMBINATIONS.map {|n| n.map(&:to_s).join('_').to_sym }
+  ADJECTIVE_VARIANT_COLUMNS = [:gender, :number, :case]
+
   def article?
     return read_attribute(:word_class).try(:to_sym) == :article
   end
 
   def adjective?
-    return read_attribute(:word_class) == :adjective if read_attribute(:word_class).present?
+    return word_class == :adjective if word_class.present?
     !! lexical_form.match(ADJECTIVE_RE)
   end
 
@@ -79,9 +83,6 @@ module Adjective
         return send(:"#{gender}_#{variant}") if send(:"#{gender}_#{variant}").present?
         return stem + adjective_ending(variant, gender) if regular_adjective? && adjective_ending(variant, gender)
       end
-    end
-    define_method(:"display_#{variant}") do
-      send(:"display_neuter_#{variant}")
     end
     #can't alias_method as these are built after talking to the db.
     define_method(:"neuter_#{variant}=") do |value|

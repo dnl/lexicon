@@ -5,12 +5,14 @@ module Noun
               (?:,\s
                 (?:(?<declension_hint>[\p{Greek}'’]+)\s)?
               |\s)
-              (?<gender>[mfn])
-            /x
+              (?<gender>[mfn])\s*
+             $/x
+  NOUN_VARIANT_COLUMNS = [:number, :case]
 
-  NOUN_VARIANTS = Word::NUMBERS.product(CASES)
-                               .map {|n| n.map(&:to_s).join('_').to_sym }
-                               .reject { |w| w == :plural_vocative}
+  NOUN_VARIANT_COMBINATIONS = Word::NUMBERS.product(CASES)
+                                           .reject { |w| w == [:plural, :vocative]}
+
+  NOUN_VARIANTS = Noun::NOUN_VARIANT_COMBINATIONS.map {|n| n.map(&:to_s).join('_').to_sym }
 
   GENDERS = [
     :masculine,
@@ -66,6 +68,10 @@ module Noun
     @gender ||= lexical_form.match(NOUN_RE).try(:[], :gender).try(:to_sym)
   end
 
+  def display_gender
+    GENDERS.find { |g| g.to_s.first == gender.try(:to_s) }.to_s
+  end
+
   def nounish?
     noun? || pronoun?
   end
@@ -73,8 +79,6 @@ module Noun
   def noun_lexical_tail
     ", #{declension_hint} #{gender}" if declension_hint.present?
   end
-
-  ###
 
   def noun_declension
     @declension ||= case declension_hint
@@ -126,7 +130,8 @@ module Noun
   end
 
   NOUN_VARIANTS.each do |variant|
-    define_method("display_#{variant}") do
+    define_method(:"display_#{variant}") do
+      return send(:"display_neuter_#{variant}") if adjectiveish?
       return send(variant) if send(variant).present?
       return stem + ending(variant) if regular_noun? && ending(variant)
     end
