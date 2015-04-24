@@ -80,7 +80,9 @@ class Word < ActiveRecord::Base
   end
 
   def weight
+    return 5 if incorrect.zero? && correct.zero?
     return incorrect if correct.zero?
+    return 0.05 if incorrect.zero?
     return incorrect.to_f / correct.to_f
   end
 
