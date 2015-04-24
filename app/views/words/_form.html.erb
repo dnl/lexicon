@@ -33,7 +33,7 @@
         <%= variant.to_s.humanize %>
       </div>
       <% Noun::GENDERS.each do |gender| %>
-        <div class="cell word input">
+        <div class="cell word input" style="min-width:<%= f.object.send(:"display_#{gender}_#{variant}").to_s.length.to_f / 1.5 %>em">
           <div class="input-wrapper">
             <%= f.text_field :"#{gender}_#{variant}", class: 'variant', placeholder: f.object.send(:"display_#{gender}_#{variant}") %>
           </div>
@@ -56,7 +56,7 @@
         <%= variant.to_s.humanize %>
       </div>
       <% Verb::TENSES.each do |tense| %>
-        <div class="cell word input">
+        <div class="cell word input" style="min-width:<%= f.object.send(:"display_#{tense}_#{variant}").to_s.length.to_f / 1.5 %>em">
           <div class="input-wrapper">
             <%= f.text_field :"#{tense}_#{variant}", class: 'variant', placeholder: f.object.send(:"display_#{tense}_#{variant}") %>
           </div>
@@ -76,13 +76,13 @@
       <div class="cell word-class field-label">
         <%= word_case.to_s.humanize %>
       </div>
-      <div class="cell word input">
+      <div class="cell word input" style="min-width:<%= f.object.send(:"display_singular_#{word_case}").to_s.length.to_f / 1.5 %>em">
         <div class="input-wrapper">
           <%= f.text_field :"singular_#{word_case}", class: 'variant', placeholder: f.object.send(:"display_singular_#{word_case}") %>
         </div>
       </div>
-      <div class="cell word input">
-        <div class="input-wrapper">
+      <div class="cell word input" style="min-width:<%= word_case == :vocative ? 0 : f.object.send(:"display_plural_#{word_case}").to_s.length.to_f / 1.5 %>em">
+        <div class="input-wrapper"  >
           <%= f.text_field :"plural_#{word_case}", class: 'variant', placeholder: f.object.send(:"display_plural_#{word_case}") unless word_case == :vocative %>
         </div>
       </div>

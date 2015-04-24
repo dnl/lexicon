@@ -10,7 +10,7 @@ module Adjective
   ADJECTIVE_VARIANT_COLUMNS = [:gender, :number, :case]
 
   def article?
-    return read_attribute(:word_class).try(:to_sym) == :article
+    word_class == :article
   end
 
   def adjective?
@@ -31,14 +31,19 @@ module Adjective
       else
         ending_group = '2.3'
       end
-      if ending_group
-        Noun::NOUN_ENDINGS[ending_group].try(:[], Noun::NOUN_VARIANTS.index(variant))
-      end
+    end
+
+    if ending_group
+      Noun::NOUN_ENDINGS[ending_group].try(:[], Noun::NOUN_VARIANTS.index(variant))
     end
   end
 
   def adjectiveish?
     adjective? || article?
+  end
+
+  def adjectivish?
+    adjectiveish?
   end
 
   def adjective_212?
@@ -47,13 +52,18 @@ module Adjective
                                        feminine_declension_hint == 'α')
   end
 
+  def adjective_33?
+    feminine_declension_hint.blank? && neuter_declension_hint.present?
+  end
+
   def adjective_stem
     return term[0..-3] if adjective_212?
     term
   end
 
   def regular_adjective?
-    adjective_212?
+    return false unless adjective_212?
+    ADJECTIVE_VARIANTS.all? { |variant| send(variant).blank? }
   end
 
   def adjective_lexical_tail
@@ -75,13 +85,25 @@ module Adjective
     lexical_form.match(ADJECTIVE_RE).try(:[], :term) || lexical_form
   end
 
+  def adjective_from_lexical_form(gender)
+    case gender
+    when :masculine
+      adjective_term
+    when :neuter
+      neuter_declension_hint
+    when :feminine
+      return adjective_term if adjective_33?
+      return feminine_declension_hint
+    end
+  end
 
   # neuter is unadorned
   Noun::NOUN_VARIANTS.each do |variant|
     Noun::GENDERS.each do |gender|
       define_method(:"display_#{gender}_#{variant}") do
         return send(:"#{gender}_#{variant}") if send(:"#{gender}_#{variant}").present?
-        return stem + adjective_ending(variant, gender) if regular_adjective? && adjective_ending(variant, gender)
+        return Word.orthograph(stem + adjective_ending(variant, gender)) if regular_adjective? && adjective_ending(variant, gender)
+        return adjective_from_lexical_form(gender) if variant == :singular_nominative
       end
     end
     #can't alias_method as these are built after talking to the db.

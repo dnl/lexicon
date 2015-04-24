@@ -19,6 +19,10 @@ module Preposition
     lexical_form.match(PREPOSITION_RE).try(:[], :term) || lexical_form
   end
 
+  def regular_preposition?
+    true
+  end
+
 
   def term_with_case_taken
     "#{term}#{preposition_lexical_tail}"

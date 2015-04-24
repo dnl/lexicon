@@ -80,7 +80,8 @@ class Word < ActiveRecord::Base
   end
 
   def weight
-    (incorrect + 1).to_f / (correct + 1)
+    return incorrect if correct.zero?
+    return incorrect.to_f / correct.to_f
   end
 
   def stem
@@ -113,18 +114,21 @@ class Word < ActiveRecord::Base
   def variants
     return Noun::NOUN_VARIANTS if nounish?
     return Verb::VERB_VARIANTS if verb?
+    return Adjective::ADJECTIVE_VARIANTS if adjectivish?
     return []
   end
 
   def variant_columns
     return Noun::NOUN_VARIANT_COLUMNS if nounish?
     return Verb::VERB_VARIANT_COLUMNS if verb?
+    return Adjective::ADJECTIVE_VARIANT_COLUMNS if adjectivish?
     return []
   end
 
   def variant_combinations
     return Noun::NOUN_VARIANT_COMBINATIONS if nounish?
     return Verb::VERB_VARIANT_COMBINATIONS if verb?
+    return Adjective::ADJECTIVE_VARIANT_COMBINATIONS if adjectivish?
     return []
   end
 
@@ -201,6 +205,33 @@ class Word < ActiveRecord::Base
   def method_or_symbol(symbol)
     return send(symbol) if self.respond_to?(symbol)
     return symbol
+  end
+
+  def regular?
+    return regular_noun? if nounish?
+    return regular_verb? if verb?
+    return regular_adjective? if adjectivish?
+    return regular_preposition? if preposition?
+    return false
+  end
+
+  def self.orthograph word
+    word.gsub(/ς/,  'σ')
+        .gsub(/κσ/, 'ξ')
+        .gsub(/πσ/, 'ψ')
+        .gsub(/σ$/, 'ς')
+  end
+
+  def self.search params
+    params = params.symbolize_keys.to_h
+    word_class = params.delete(:word_class)
+    regular = params.delete(:regular)
+    id = params.delete(:word_id)
+    params[:id] = id if id
+    output = where(params).to_a
+    output = output.select{|w| w.display_word_class == word_class.to_sym } if word_class.present?
+    output = output.select{|w| w.regular?.to_s == regular } if regular.present?
+    output
   end
 
 end

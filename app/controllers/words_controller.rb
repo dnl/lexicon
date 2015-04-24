@@ -4,7 +4,7 @@ class WordsController < ApplicationController
   before_action :set_word, only: [:show, :edit, :update, :destroy]
 
   def index
-    @words = @dictionary.words.where(search_params).sort_by(&:sort_term)
+    @words = @dictionary.words.search(search_params).sort_by(&:sort_term)
     @word = new_word
   end
 
@@ -79,6 +79,10 @@ class WordsController < ApplicationController
     end
 
     def search_params
-      params.permit(:word_class)
+      params.permit(
+        :word_class,
+        :regular,
+        :translation
+      )
     end
 end

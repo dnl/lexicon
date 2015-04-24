@@ -28,7 +28,7 @@ Dictionary.where(name:'Greek').first.import "#
 γινοσκω                | know
 γραφω                  | write
 ἐστιν                  | is
-ἐχο                    | have
+ἐχω                    | have
 θεος, ου m             | God
 Ἰησους                 | Jesus
 και                    | and
@@ -126,7 +126,7 @@ Dictionary.where(name:'Greek').first.import "#
 προβατον, ου n         | sheep
 προφητης, ου m         | prophet
 Σιμων, Σιμωνος m       | Simon
-ουν + dative           | with
+συν + dative           | with
 # φιλεω                | love
 
 ### CHAPTER 7
@@ -211,4 +211,26 @@ Dictionary.where(name:'Greek').first.import "#
 σοφος, η, ον           | wise
 τρεις, τρια            | three
 φοβος, ου m            | fear
+
+### CHAPTER 11
+ἀκολουθεω + dative     | follow
+ἀνηρ, ἀνδρος m         | man/husband
+γνωσις, εως f          | knowledge
+δε                     | and/but (often not translated)
+δικαιος, α, ον         | righteous/just
+δοξα, ης f             | glory
+ἐαν                    | if
+εἰ                     | if
+ἱνα                    | that
+κριμα, τος n           | judgement
+κρισις, εως f          | judgement
+μαρτυρεω               | witness/testify
+μαρτυρια, ας f         | testimony/witness
+μαρτυς, μαρτυρος m     | witness (witnesser)
+νεκρος, α, ον          | dead
+ὁς, ἡ, ὁ               | who/which/that
+ὁτι                    | that/because/(direct speech)
+περιπατεω, aor. περιεπατησα  | walk/lifestyle
+πρωτος, η, ον          | first
+ῥημα, τος, n           | word
 "

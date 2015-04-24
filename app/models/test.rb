@@ -25,12 +25,9 @@ class Test < ActiveRecord::Base
   def self.generate(dictionary, params={}, attempts=0)
     raise ActiveRecord::RecordNotFound if attempts > 10
     test = Test.new(dictionary_id:dictionary.id)
-    test.word = Word.where(id:params[:word_id]).first if params[:word_id].present?
-    test.word ||= dictionary.test_word
+    test.word ||= dictionary.test_word(params)
 
     test.question_method, test.answer_method = test.word.test_type
-
-    # byebug if test.word.nounish?
 
     return generate(dictionary, params, attempts+1) if test.question_method.blank?
 
@@ -39,6 +36,7 @@ class Test < ActiveRecord::Base
     test.correct_answer = test.word.method_or_symbol(test.answer_method)
     test.question = test.word.send(test.question_method)
     test.save!
+
     test
   end
 
@@ -60,7 +58,7 @@ class Test < ActiveRecord::Base
   end
 
   def is_answer?(answer)
-    Test.normalize(correct_answer).split(/\s*\/\s*/).include?(Test.normalize(answer))
+    Test.normalize(correct_answer) == Test.normalize(answer)
   end
 
   def test_method
@@ -68,7 +66,7 @@ class Test < ActiveRecord::Base
   end
 
   def self.normalize word
-    word.unicode_normalize.mb_chars.downcase
+    Word.orthograph(word).unicode_normalize.mb_chars.downcase
   end
 
 end

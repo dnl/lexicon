@@ -1,5 +1,14 @@
 module Verb
 
+  VERB_RE = /^(?<term>[\p{Greek}'’\/\s]+(?:ω|ομαι))
+              (?:,\sfut.\s
+                (?:(?<future_stem>[\p{Greek}'’]+)\s)?
+              |\s?)
+              (?:,\saor.\s
+                (?:(?<aorist_stem>[\p{Greek}'’]+)\s)?
+              |\s?)
+             $/x
+
   def verb?
     return word_class == :verb unless word_class.blank?
     return false if nounish?
@@ -56,8 +65,12 @@ module Verb
   end
 
   def regular_verb?(tense=:present)
-    #here I'm meaning regular to be 'consistent to some rule based on the endings in the dictionrary'
+    return false unless calculable_verb?(tense)
+    VERB_VARIANTS.all? { |variant| send(variant).blank? }
+  end
 
+  def calculable_verb?(tense=:present)
+    #here I'm meaning regular to be 'consistent to some rule based on the endings in the dictionrary'
     ending_set.present? && (tense==:present || future_stem.present?)
   end
 
@@ -67,8 +80,8 @@ module Verb
       when /εω$/ then stem + 'εσ'
       when /οω$/ then stem + 'οσ'
       when /[λμνρ]ω$/ then stem
-      when /[πβφ]ω$/ then stem[0..-1] + 'ψ'
-      when /[κγχ]ω$/ then stem[0..-1] + 'ξ'
+      when /[πβφ]ω$/ then stem[0..-2] + 'ψ'
+      when /[κγχ]ω$/ then stem[0..-2] + 'ξ'
       when /ζω$/ then stem[0..-1] + 'σ'
       when /σσω$/ then stem[0..-2] + 'ξ'
       when /πτω$/ then stem[0..-2] + 'ψ'
@@ -90,7 +103,7 @@ module Verb
     TENSES.each do |tense|
       define_method(:"display_#{tense}_#{variant}") do
         return send(:"#{tense}_#{variant}") if send(variant).present?
-        return verb_stem(tense) + verb_ending(variant, tense) if regular_verb?(tense) && verb_ending(variant, tense)
+        return Word.orthograph(verb_stem(tense) + verb_ending(variant, tense)) if regular_verb?(tense) && verb_ending(variant, tense)
       end
     end
     # present is default.

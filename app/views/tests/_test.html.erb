@@ -1,12 +1,11 @@
-<%= form_for test, remote: true, html: {class: 'test card'} do |f| %>
+<%= form_for test, url: test_path(test.id, @search_params), method: :put, remote: true, html: {class: 'test card'} do |f| %>
   <%= link_to 'i', edit_dictionary_path(@dictionary), class: 'button settings-button secondary' %>
   <div class="test-label <%= test.question_method %>"><%= @dictionary.label_for_column(test.question_method) %></div>
-  <div class="question <%= test.question_method %>"><%= test_label(random_comma_segment(test.question), test.question_method) %></div>
+  <div class="question <%= test.question_method %>"><%= test_label(test.question, test.question_method) %></div>
   <div class="test-label <%= test.answer_method %>"><%= @dictionary.label_for_column(test.answer_method) %></div>
 
   <div class="answers">
       <% test.options.each do |option| %>
-        <% option = random_comma_segment(option) %>
         <%= f.button test_label(option, test.answer_method), name: :'test[given_answer]', value: option, class: "answer #{test.answer_method} #{' correct-answer' if test.is_answer?(option)}" %>
       <% end %>
   </div>

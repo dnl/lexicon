@@ -133,7 +133,7 @@ module Noun
     define_method(:"display_#{variant}") do
       return send(:"display_neuter_#{variant}") if adjectiveish?
       return send(variant) if send(variant).present?
-      return stem + ending(variant) if regular_noun? && ending(variant)
+      return Word.orthograph(stem + ending(variant)) if regular_noun? && ending(variant)
     end
   end
 
