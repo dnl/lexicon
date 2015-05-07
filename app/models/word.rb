@@ -80,10 +80,15 @@ class Word < ActiveRecord::Base
   end
 
   def weight
-    return 5 if incorrect.zero? && correct.zero?
-    return incorrect if correct.zero?
-    return 0.05 if incorrect.zero?
-    return incorrect.to_f / correct.to_f
+    if incorrect.zero? && correct.zero?
+      Word.select(:incorrect).max(:incorrect) + 1
+    elsif correct.zero?
+      incorrect.to_f
+    elsif incorrect.zero?
+      0.5 / correct.to_f
+    else
+      incorrect.to_f / correct.to_f
+    end
   end
 
   def stem
@@ -166,7 +171,6 @@ class Word < ActiveRecord::Base
               .where.not(id:id)
               .limit(dictionary.valid_option_count)
               .order('RANDOM()')
-              #.where(word_class:self.word_class)
     options.to_a.map(&answer_method.to_sym)
     .tap { |a| a << self.send(answer_method.to_sym) }
     .shuffle
