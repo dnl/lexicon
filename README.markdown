@@ -10,10 +10,6 @@ A tool for learning languages.
 4. ???
 4. fluency.
 
-Deployed to heroku at
-
-<http:://lexicon.dansherson.com>
-
 ---
 
 Feel free to fork and deploy, or create an account on my deployment.
